@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>For My Love</title>
+
+    <style>
+        body {
+
+            margin: 0;
+            font-family: Arial;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 60px;
+        }
+
+        h1 {
+            color: #ff2e63;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            margin: 10px;
+            cursor: pointer;
+            background: #ff2e63;
+            color: white;
+            font-size: 16px;
+        }
+
+        .noBtn {
+            background: gray;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        img {
+            width: 300px;
+            border-radius: 15px;
+        }
+
+        .quiz {
+            margin-top: 20px;
+        }
+
+        /* floating hearts */
+
+        .heart {
+            position: fixed;
+            color: red;
+            font-size: 20px;
+            animation: float 6s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh)
+            }
+
+            100% {
+                transform: translateY(-10vh)
+            }
+        }
+
+        /* love meter */
+
+        #loveMeter {
+            width: 300px;
+            height: 20px;
+            background: #eee;
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+            display: none;
+        }
+
+        #progress {
+            height: 100%;
+            width: 0%;
+            background: #ff2e63;
+            transition: width 1s;
+        }
+
+        #slideshow {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            margin-top: 30px;
+        }
+
+        .slide-track {
+            display: flex;
+            width: calc(300px * 10);
+            animation: scroll 25s linear infinite;
+        }
+
+        .slide-track img {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-right: 15px;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-300px * 5));
+            }
+
+        }
+
+        .correct {
+            background: red !important;
+            color: white;
+        }
+
+        .wrong {
+            background: #444 !important;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio autoplay loop>
+        <source src="music.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="container">
+
+        <h1 id="title"></h1>
+
+        <h2>Do you love me?</h2>
+
+        <button id="yes">Yes</button>
+        <button id="no" class="noBtn">No</button>
+
+        <div id="loveMeter">
+            <div id="progress"></div>
+        </div>
+
+        <!-- SLIDESHOW -->
+
+        <div id="slideshow" class="hidden">
+
+            <h2>hmmmmmmmmmmmmmm-yummmmmmm</h2>
+
+            <div class="slide-track">
+
+                <img src="./iloveimg-converted/IMG_2447.jpg">
+                <img src="./iloveimg-converted/IMG_2512.jpg">
+                <img src="./iloveimg-converted/Screenshot 2026-03-05 230418.png">
+                <img src="./iloveimg-converted/IMG_2667.jpg">
+                <img src="./iloveimg-converted/IMG-20250809-WA0005.jpg">
+
+                <!-- duplicate images for seamless loop -->
+
+                <img src="./iloveimg-converted/IMG_2447.jpg">
+                <img src="./iloveimg-converted/IMG_2512.jpg">
+                <img src="./iloveimg-converted/Screenshot 2026-03-05 230418.png">
+                <img src="./iloveimg-converted/IMG_2667.jpg">
+                <img src="./iloveimg-converted/IMG-20250809-WA0005.jpg">
+
+            </div>
+
+        </div>
+
+        <!-- QUIZ -->
+
+        <div id="quiz" class="quiz hidden">
+
+            <h2>Mini Love Quiz</h2>
+
+            <p>my favourite food is?</p>
+            <button onclick="correct(this)">puss puss</button>
+            <button onclick="wrong(this)">chicken</button>
+
+            <p>Our first kiss?</p>
+            <button onclick="correct(this)">4th january</button>
+            <button onclick="wrong(this)">5th january</button>
+
+            <p>Who is the cutest?</p>
+            <button onclick="correct(this)">you</button>
+            <button onclick="wrong(this)">Me</button>
+
+            <p>Who loves more?</p>
+            <button onclick="correct(this)">Me</button>
+            <button onclick="wrong(this)">You</button>
+
+            <p>Who is the luckiest person?</p>
+            <button onclick="correct(this)">Me because I have you</button>
+            <button onclick="wrong(this)">Someone else</button>
+
+        </div>
+
+        <!-- SECRET -->
+
+        <div id="secret" class="hidden">
+            <h2>Secret Message</h2>
+            <p>You passed the love test.</p>
+            <button onclick="showProposal()">Continue</button>
+        </div>
+
+        <!-- PROPOSAL -->
+
+        <div id="proposal" class="hidden">
+
+            <h1>I Love You mera baccha, kuch bhi hojye-kuch bhi 
+                hum kabhi alag nhi rhenge; Waise bhi aap mere aandar ho JI
+            </h1>
+            <h2>Will you be my forever Valentine?</h2>
+
+            <button id="finalYes">Yes</button>
+            <button id="finalNo" class="noBtn">No</button>
+
+        </div>
+
+        <div id="finalMessage" class="hidden">
+            <h1>Yay ❤️</h1>
+            <h2>you're my that 'extra-inch'.</h2>
+        </div>
+
+    </div>
+
+    <script>
+
+        let girlfriend = "Ashuuuuuuu JI";
+
+        document.getElementById("title").innerText = "Happy Valentine's Day " + girlfriend;
+
+        /* RUNAWAY BUTTON FUNCTION */
+
+        function makeRunaway(button) {
+
+            button.addEventListener("mouseover", () => {
+
+                let x = Math.random() * window.innerWidth;
+                let y = Math.random() * window.innerHeight;
+
+                button.style.position = "absolute";
+                button.style.left = x + "px";
+                button.style.top = y + "px";
+
+            });
+
+        }
+
+        makeRunaway(document.getElementById("no"));
+
+        /* YES BUTTON */
+
+        document.getElementById("yes").onclick = () => {
+
+            let meter = document.getElementById("loveMeter");
+            let progress = document.getElementById("progress");
+
+            meter.style.display = "block";
+
+            let value = 0;
+
+            let interval = setInterval(() => {
+
+                value += 10;
+                progress.style.width = value + "%";
+
+                if (value >= 100) {
+
+                    clearInterval(interval);
+
+                    document.getElementById("slideshow").classList.remove("hidden");
+
+                    startSlideshow();
+
+                    setTimeout(() => {
+                        document.getElementById("quiz").classList.remove("hidden");
+                    }, 4000);
+
+                }
+
+            }, 200);
+
+        };
+
+        /* SLIDESHOW */
+
+        let photos = ["photo1.jpg", "photo2.jpg", "photo3.jpg"];
+        let index = 0;
+
+        function startSlideshow() {
+
+            setInterval(() => {
+
+                index++;
+                if (index >= photos.length) index = 0;
+
+                document.getElementById("photo").src = photos[index];
+
+            }, 2000);
+
+        }
+
+        /* QUIZ */
+
+        let score = 0;
+
+        function correct(button) {
+
+            button.classList.add("correct");
+
+            score++;
+
+            setTimeout(() => {
+                checkQuiz();
+            }, 500);
+
+        }
+
+        function wrong(button) {
+
+            button.classList.add("wrong");
+
+            setTimeout(() => {
+                checkQuiz();
+            }, 500);
+
+        }
+
+        function checkQuiz() {
+
+            if (score >= 4) {
+
+                document.getElementById("secret").classList.remove("hidden");
+
+            }
+
+        }
+
+        /* PROPOSAL */
+
+        function showProposal() {
+
+            document.getElementById("proposal").classList.remove("hidden");
+
+            makeRunaway(document.getElementById("finalNo"));
+
+        }
+
+        document.getElementById("finalYes").onclick = () => {
+
+            document.getElementById("proposal").classList.add("hidden");
+            document.getElementById("finalMessage").classList.remove("hidden");
+
+        };
+
+        /* FLOATING HEARTS */
+
+        function createHeart() {
+
+            let heart = document.createElement("div");
+
+            heart.className = "heart";
+            heart.innerHTML = "❤";
+
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+
+        }
+
+        setInterval(createHeart, 300);
+
+    </script>
+
+</body>
+
+</html>
